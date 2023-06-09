@@ -1,0 +1,49 @@
+version: '3'
+
+servicies:
+drupal:
+image: bitnami/drupal:latest
+ports:
+- '8080: 8080'
+environment: 
+- MARIADB_HOST=db
+- MARIADB_PORT_NUMBER_3306
+- DRUPAL_DATABASE_USER=${DRUPAL_DATABASE_USER: root}
+- DRUPAL_DATABASE_PASSWORD=${DRUPAL_DATABASE_PASSWORD: -}
+- DRUPAL_DATABASE_NAME=${DRUPRAL_DATABASE_NAME: -bitnami_drupal}
+
+volumes:
+- 'drupal_data:/bitnami'
+
+db:
+
+image: bitnami/mariadb:latest
+environment:
+- ALLOW_EMPTY_PASSWORD=yes
+- MARIADB_USER=YAM428
+- MARIADB_PASSWORD=030118040
+- MARIADB_DATABASE=final
+
+volumes:
+-'db_data:/bitnami'
+
+ngnix: 
+image: ngnixports:
+- '80:80'
+
+volumes:
+
+- './ngnix/conf:/etc/ngnix/conf.d'
+
+certbot:
+image: certbot/certbot
+volumes:
+- './certbot/conf:/etc/letsencrypt'
+- './certbot/www:/var/www/certbot'
+
+volumes:
+drupal_data:
+driver: local
+
+db_data:
+driver: local
